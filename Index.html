@@ -742,7 +742,7 @@ const Audio2={
     const AC=window.AudioContext||window.webkitAudioContext; if(!AC) return;
     try{
       this.ctx=new AC();
-      this.master=this.ctx.createGain(); this.master.gain.value=state.sound?.9:0; this.master.connect(this.ctx.destination);
+      this.master=this.ctx.createGain(); this.master.gain.value=state.sound?0.9:0; this.master.connect(this.ctx.destination);
       // ветер: коричневый шум + фильтр c LFO
       const len=this.ctx.sampleRate*2, buf=this.ctx.createBuffer(1,len,this.ctx.sampleRate), d=buf.getChannelData(0);
       let last=0; for(let i=0;i<len;i++){ const w=Math.random()*2-1; last=(last+.02*w)/1.02; d[i]=last*3.2; }
@@ -758,7 +758,7 @@ const Audio2={
     }catch(e){}
   },
   resume(){ this.init(); if(this.ctx&&this.ctx.state==='suspended') this.ctx.resume().catch(()=>{}); },
-  setEnabled(on){ this.init(); if(this.master) this.master.gain.setTargetAtTime(on?.9:0,this.ctx.currentTime,.08); if(on) this.resume(); },
+  setEnabled(on){ this.init(); if(this.master) this.master.gain.setTargetAtTime(on?0.9:0,this.ctx.currentTime,.08); if(on) this.resume(); },
   noise(dur,freq,q,gain,type='bandpass'){
     if(!this.ready||!state.sound) return;
     const c=this.ctx, n=Math.max(1,Math.floor(c.sampleRate*dur));
@@ -770,7 +770,7 @@ const Audio2={
     g.gain.setValueAtTime(gain,c.currentTime); g.gain.exponentialRampToValueAtTime(.0001,c.currentTime+dur);
     s.connect(f); f.connect(g); g.connect(this.master); s.start();
   },
-  breath(inhale){ this.noise(inhale?.55:.7, inhale?620:380, .8, inhale?.022:.017); },
+  breath(inhale){ this.noise(inhale?0.55:.7, inhale?620:380, 0.8, inhale?0.022:0.017); },
   geiger(){ this.noise(.012,2600,1.2,.1,'highpass'); },
   tick(){ const now=performance.now(); if(now-this.lastTick<70) return; this.lastTick=now; this.noise(.02,1500,3,.035); },
   shutter(){ this.noise(.06,1100,1.4,.09); },
